@@ -1,0 +1,258 @@
+{% extends 'basepage.html' %}
+
+{% load staticfiles %}
+
+{% block CSS %}
+
+<link rel="stylesheet" href="{% static 'table.css' %}">
+
+{% endblock %}
+
+{% block Main %}
+
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px"> Structural beam deflection and stress calculator</h1>
+
+<table id="customers">
+
+  <tr>
+    <th colspan=4 ><img src="{% static 'image/struc.jpg' %}" width="100%" height="100" /></th>
+  </tr>
+  
+  <tr>
+    <th>Parameter</th>
+    <th>Symbol</th>
+    <th>Value</th>
+	<th>Unit</th>
+  </tr>
+  
+  <form action="{% url 'calculator1' %}" method="post">
+  {% csrf_token %}
+  
+  
+		<tr>
+			<td>Force</td>
+			<td>F</td>
+			<td><input type="text" name="f" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit1_input"  >
+					  <option value="newton">newton</option>
+					  <option value="kilonewton">KiloNewton</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		  
+		  
+		<tr>
+			<td>Distance</td>
+			<td>a</td>
+			<td><input type="text" name="a" value="" required></td>
+			<td rowspan="2">
+			
+				<select name="unit2_input" style="" >
+				  <option value="meter">meter</option>
+				  <option value="milimeter">milimeter</option>
+				</select>
+
+			</td>
+
+		<tr>
+			<td>Distance</td>
+			<td>b</td>
+			<td><input type="text" name="b" value="" required></td>
+		</tr>
+		
+		<tr>
+			<td>Distance</td>
+			<td>x</td>
+			<td><input type="text" name="x" value="" required></td>
+			<td rowspan="3">
+			
+				<select name="unit3_input" style="" >
+				  <option value="meter">meter</option>
+				  <option value="milimeter">milimeter</option>
+				</select>
+
+			</td>
+		</tr>	
+			
+		</tr>
+		  
+		   <tr>
+			<td>Beam Length</td>
+			<td>L</td>
+			<td><input type="text" name="l" value="" required></td>
+		</tr>
+		  
+
+		  
+	
+		  
+		<tr>
+			<td>Height</td>
+			<td>h</td>
+			<td><input type="text" name="h" value="" required></td>
+		</tr>
+		
+
+
+		
+		<tr>
+			<td>Modulus of Elasticity</td>
+			<td>E</td>
+			<td><center><input type="text" name="e" value="" required></center></td>
+			<td rowspan="1">
+
+					<select name="unit4_input" style="" >
+					  <option value="mpa">Mpa</option>
+					  <option value="gpa">Gpa</option>
+					</select>
+
+			</td>	
+
+		</tr>
+  
+  
+
+
+	</table>
+	
+
+  <input type="submit" value="Submit" style="margin-left:-46%; margin-top:5px;font-size:20px">
+	
+
+</center>
+
+
+
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px"> Choose your output units.</h1>
+
+<table id="customers">
+
+	  <tr>
+		<th>Parameter</th>
+		<th>Symbol</th>
+		<th>Equation</th>
+		<th>Unit</th>
+	  </tr>
+  
+  
+		<tr>
+			<td>Moment of Inertia</td>
+			<td>I</td>
+			<td>$$ I = {b * h^3 \over 12} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit1_output"  value="a">
+					  <option value="newton/meter">newton/meter&sup2; </option>
+					  <option value="newton/milimeter">newton/milimeter&sup2; </option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		</table>
+	</form>
+</center>
+
+
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
+{% if result == 1 %}
+
+<hr style="background-color:black">
+
+<center><h1 style="font-size:25px;color:black">Result</h1></center>
+
+<center style="margin-top:2%">
+	<table id="customers">
+
+	  <tr>
+		<th>Parameter</th>
+		<th>Value</th>
+		<th>Unit</th>
+	  </tr>
+  
+		
+		  
+		<tr>
+			<td>Moment of Inertia</td>
+			<td>{{I}}</td>
+			<td>{{unit1_output}}<sup>2</sup></td>
+		</tr>
+		
+		  
+		<tr>
+			<td><center>Max moment M</center></td>
+			<td><center>{{M}}</center></td>
+			<td><center></center></td>
+
+
+		</tr>
+		
+{% if moment_M_x != 0 %}
+		<tr>
+			<td><center>Moment M(x)</center></td>
+			<td><center>{{moment_M_x}}</center></td>
+			<td><center></center></td>
+
+		</tr>
+		
+		<tr>
+			<td><center>Sheer Stress V(x)</center></td>
+			<td><center>{{shear_stress_V_x}}</center></td>
+			<td><center></center></td>
+
+		</tr>
+		
+{% endif %}
+		
+	</table>
+	
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>
+
+</center>
+
+{% endif %}
+									{% block JS %}
+									
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>								
+									
+									{% endblock %}
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

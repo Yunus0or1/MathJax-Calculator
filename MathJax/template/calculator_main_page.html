@@ -1,0 +1,62 @@
+{% extends 'basepage.html' %}
+
+{% load staticfiles %}
+
+{% block CSS %}
+
+<link rel="stylesheet" href="{% static 'table.css' %}">
+
+{% endblock %}
+
+{% block Main %}
+
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px"> All Calculators </h1>
+
+<table id="customers" style="width:80%">
+  <tr>
+    <th colspan=3>STRUCTURAL ENGINEERING</th>
+  </tr>
+  <tr>
+  
+    <th style="width:20%">Calulators</th>
+    <th>Definition</th>
+	<th style="width:30%">Image</th>
+
+  </tr>  
+  
+
+
+    <tr>
+        <td><a href="{% url 'calculator2' %}">Structural steel calculator</a></th>
+        <td>Molsheim, Alsace, France</th>
+                <!-- considering it is on the same folder that .html file -->
+        <td><img src="{% static 'image/structural_steel.jpg' %}" width="450" height="100" /></th>
+    </tr> 	
+  
+</table>  
+
+</center>
+
+
+
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

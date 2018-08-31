@@ -1,0 +1,18 @@
+
+ body {
+		
+  background: no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  -webkit-transition: background-image 0s 1s ease-in-out;
+  background-position: right 0px top 20px;
+  -moz-transition:background-image 0s 1s ease-in-out;
+  transition: background-image 1s ease-in-out;
+  background-color:#D3D3D3;
+
+  
+  } 
+  
+

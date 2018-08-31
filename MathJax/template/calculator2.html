@@ -1,0 +1,1020 @@
+{% extends 'basepage.html' %}
+
+{% load staticfiles %}
+
+{% block CSS %}
+
+<link rel="stylesheet" href="{% static 'table.css' %}">
+
+<style>
+
+sup {font-size:xx-small; vertical-align:super;}
+</style>
+
+{% endblock %}
+
+{% block Main %}
+
+{% if result == 0 %}
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px">Structural steel calculator</h1>
+
+
+<table id="customers">
+
+  <tr>
+    <th colspan=4 ><img src="{% static 'image/structural_steel.jpg' %}" width="100%" height="100" /></th>
+  </tr>
+  
+  <tr>
+    <th>Parameter</th>
+    <th>Symbol</th>
+    <th>Value</th>
+	<th>Unit</th>
+  </tr>
+  
+  <form action="{% url 'calculator2' %}" method="post">
+  {% csrf_token %}
+  
+  
+		<tr>
+			<td>Force</td>
+			<td>F</td>
+			<td><input type="text" name="f_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_f_input"  >
+					  <option value="kN">kN</option>
+					  <option value="N">N</option>
+					  <option value="MN">MN</option>
+					  <option value="lbf">lbf</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		  
+		  
+		<tr>
+			<td>Force distance from A end</td>
+			<td>x</td>
+			<td><input type="text" name="x_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_x_input"  >
+						<option value="m">m</option>
+						<option value="mm">mm</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+						<option value="ft">ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		  
+		<tr>
+			<td>Force distance from end A</td>
+			<td>a</td>
+			<td><input type="text" name="a_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_a_input"  >
+						<option value="m">m</option>
+						<option value="mm">mm</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+						<option value="ft">ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>		
+  
+ 		<tr>
+			<td>Moment of inertia</td>
+			<td>I</td>
+			<td><input type="text" name="i_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_i_input" >
+						<option value="mm">mm&#8308;</option>
+						<option value="cm">cm&#8308;</option>
+						<option value="m">m&#8308;</option>
+						<option value="in">in&#8308;</option>
+						<option value="ft">ft&#8308;</option>
+					</select>
+				
+			</td>	
+
+		</tr>	 
+
+		 <tr>
+			<td>Elastic modulus</td>
+			<td>E</td>
+			<td><input type="text" name="e_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_e_input" >
+					
+						<option value="MPa">MPa</option>
+						<option value="Pa">Pa</option>
+						<option value="GPa">GPa</option>
+						<option value="N/mm_2">N/mm&sup2;</option>
+						
+					</select>
+				
+			</td>	
+
+		</tr>
+
+
+		<tr>
+			<td>Total length of the beam</td>
+			<td>L</td>
+			<td><input type="text" name="l_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_l_input"  >
+						<option value="m">m</option>
+						<option value="mm">mm</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+						<option value="ft">ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>	
+		
+		<tr>
+			<td>Force distance from end B</td>
+			<td>b</td>
+			<td><input type="text" name="b_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_b_input"  >
+						<option value="m">m</option>
+					</select>
+				
+			</td>	
+
+		</tr>		
+		
+	</table>
+	
+
+  
+	
+
+</center>
+
+
+
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px"> Choose your output units.</h1>
+
+<table id="customers">
+
+	  <tr>
+		<th>Parameter</th>
+		<th>Symbol</th>
+		<th>Equation</th>
+		<th>Unit</th>
+	  </tr>
+  
+  
+		<tr>
+			<td>Reaction force on A end</td>
+			<td>A</td>
+			<td>$$ A = {F &middot; b \over L} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_a_output"  >
+						<option value="kN">kN </option>
+						<option value="N">N</option>
+						<option value="MN">MN</option>
+						<option value="lbf">lbf</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td>Reaction force on B end</td>
+			<td>B</td>
+			<td>$$ B = {F &middot; a \over L} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_b_output"  >
+						<option value="kN">kN </option>
+						<option value="N">N</option>
+						<option value="MN">MN</option>
+						<option value="lbf">lbf</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="1">Bending moment at distance x</td>
+			<td rowspan="1">M(x)</td>
+			<td rowspan="1">
+			\[
+				M(x)= 
+			\begin{cases}
+				{F &middot; b &middot; {x\over L} },& \text{if } a\geq b\\
+				{F &middot; a &middot; {(1-{x\over L})}} ,              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>
+
+			<td rowspan="1">
+				
+					<select name="unit_m_x_output"  >
+						<option value="kN.m">kN.m</option>
+						<option value="N.m">N.m</option>
+						<option value="N.mm">N.mm</option>
+						<option value="lbf.ft">lbf.ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Maximum bending moment</td>
+			<td rowspan="1">M<sub>max</sub></td>
+			<td rowspan="1">
+			$$ M(x) = {F &middot;  {a &middot; b \over L}} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_m_max_output"  >
+						<option value="kN.m">kN.m</option>
+						<option value="N.m">N.m</option>
+						<option value="N.mm">N.mm</option>
+						<option value="lbf.ft">lbf.ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Deflection at the position of force</td>
+			<td rowspan="1">f</sub></td>
+			<td rowspan="1">
+			$$ f:= {f &middot; a^2 &middot; b^2 \over {3&middot;E&middot; I &middot; L}} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_f_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Deflection at distance x</td>
+			<td rowspan="1">v(x)</td>
+			<td rowspan="1">
+			\[
+				v(x)= 
+			\begin{cases}
+				{{F &middot; a &middot; b^2\over 
+			{6 &middot; E &middot; I}}  &middot; \left[{(1+{ L\over b }) &middot; {x \over L}}  - {x^3 \over {a &middot; b &middot; L }}\right]},& \text{if } a\geq b\\
+			
+				{{F &middot; a^2 &middot; b^2\over 
+			{6 &middot; E &middot; I}}  &middot; \left[{(1+{ L\over a }) &middot; {L-x \over L}}  - {(L-x)^3 \over {a &middot; b &middot; L }}\right]},              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>			
+			<td rowspan="1">
+				
+					<select name="unit_v_x_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Distance of maximum deflection</td>
+			<td rowspan="1">x<sub>m</sub></td>
+			<td rowspan="1">
+			\[
+				x_m= 
+			\begin{cases}
+				{\sqrt{(L^2 - b^2) \over 3}},& \text{if } a\geq b\\
+				{L - \sqrt{(L^2 - b^2) \over 3}},              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_x_m_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		<tr>
+			<td rowspan="1">Maxmum deflection at distance x<sub>m</sub></td>
+			<td rowspan="1">f<sub>m</sub></td>
+			<td rowspan="1">
+			\[
+				f_m= 
+			\begin{cases}
+				{F &middot; b &middot;\sqrt{(L^2 - b^2)^3 \over {9 &middot; \sqrt{3} &middot;E &middot; I &middot; L}}},& \text{if } a\geq b\\
+				
+				{F &middot; a &middot;\sqrt{(L^2 - b^2)^3 \over {9 &middot; \sqrt{3} &middot;E &middot; I &middot; L}}},              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_f_m_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Rotation angle at end A</td>
+			<td rowspan="1">&alpha;<sub>A</sub></td>
+			<td rowspan="1">
+			\[
+				\alpha_A= {F &middot; a &middot; b &middot; (L+b)\over{6&middot;E&middot;I&middot;L}}
+
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_alpha_a_output"  >
+						<option value="rad">rad</option>
+						<option value="deg">deg</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="1">Rotation angle at end A</td>
+			<td rowspan="1">&alpha;<sub>B</sub></td>
+			<td rowspan="1">
+			\[
+				\alpha_B= {F &middot; a &middot; b &middot; (L+a)\over{6&middot;E&middot;I&middot;L}}
+
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_alpha_b_output"  >
+						<option value="rad">rad</option>
+						<option value="deg">deg</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		</table>
+	<input type="submit" value="Submit" style="margin-left:-46%; margin-top:5px;font-size:20px">	
+	</form>
+</center>
+
+{% endif %}
+
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+</br>
+
+
+{% if result == 1 %}
+
+<center><h1 style="margin-bottom:20px">Structural steel calculator</h1></center>
+
+<center><h1 style="font-size:25px;color:black">Result</h1></center>
+
+<center style="margin-top:2%">
+	<table id="customers">
+
+	  <tr>
+		<th>Parameter</th>
+		<th>Symbol</th>
+		<th>Value</th>
+		<th>Unit</th>
+	  </tr>
+  
+		
+		  
+		<tr>
+			<td>Reaction force in A end</td>
+			<td>A</td>
+			<td>{{A}}</td>
+			<td>{{unit_a_output}}</td>
+		</tr>
+		
+		<tr>
+			<td>Reaction force in B end</td>
+			<td>B</td>
+			<td>{{B}}</td>
+			<td>{{unit_b_output}}</td>
+		</tr>
+
+		<tr>
+			<td>Bending moment at distance x</td>
+			<td>M(x)</td>
+			<td>{{M_x}}</td>
+			<td>{{unit_m_x_output}}</td>
+		</tr>		
+
+		<tr>
+			<td>Maximum bending moment</td>
+			<td>M<sub>max</sub></td>
+			<td>{{M_max}}</td>
+			<td>{{unit_m_max_output}}</td>
+		</tr>		
+
+		<tr>
+			<td>Deflection at the position of force</td>
+			<td>f</td>
+			<td>{{f_deflection}}</td>
+			<td>{{unit_f_output}}</td>
+		</tr>			
+
+		
+		<tr>
+			<td>Deflection at distance x</td>
+			<td>V(x)</td>
+			<td>{{V_x}}</td>
+			<td>{{unit_v_x_output}}</td>
+		</tr>	
+
+		<tr>
+			<td>Distance of maximum deflection</sub></</td>
+			<td>x<sub>m</sub></td>
+			<td>{{x_m}}</td>
+			<td>{{unit_x_m_output}}</td>
+		</tr>		
+
+		<tr>
+			<td>Maxmum deflection at distance f<sub>m</sub></</td>
+			<td>f<sub>m</sub></td>
+			<td>{{f_m}}</td>
+			<td>{{unit_f_m_output}}</td>
+		</tr>
+		
+		<tr>
+			<td>Rotation angle at end A</sub></</td>
+			<td>&alpha;<sub>A</sub></td>
+			<td>{{alpha_a}}</td>
+			<td>{{unit_alpha_a_output}}</td>
+		</tr>
+		
+		<tr>
+			<td>Rotation angle at end B</</td>
+			<td>&alpha;<sub>B</sub></sub></td>
+			<td>{{alpha_b}}</td>
+			<td>{{unit_alpha_b_output}}</td>
+		</tr>
+		
+	</table>
+	
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	</br>
+	
+<h1 style="font-size:25px;color:black">Your input data</h1>
+
+<center style="margin-top:2%">
+	<table id="customers">
+
+	  <tr>
+		<th>Parameter</th>
+		<th>Symbol</th>
+		<th>Value</th>
+		<th>Unit</th>
+	  </tr>
+  
+		
+		<tr>
+			<td>Force</td>
+			<td>F</td>
+			<td>{{f}}</td>
+			<td rowspan="1">{{unit_f_input}}</td>	
+
+		</tr>		  
+		<tr>
+			<td>Force distance from A end</td>
+			<td>x</td>
+			<td>{{x}}</td>
+			<td rowspan="1">{{unit_x_input}}</td>	
+
+		</tr>		  
+		<tr>
+			<td>Force distance from end A</td>
+			<td>a</td>
+			<td>{{a}}</td>
+			<td rowspan="1">{{unit_a_input}}</td>	
+
+		</tr>		  
+		<tr>
+			<td>Moment of inertia</td>
+			<td>I</td>
+			<td>{{i}}</td>
+			<td rowspan="1">{{unit_i_input}}<sup>4</sup></td>	
+
+		</tr>		  
+		<tr>
+			<td>Elastic modulus</td>
+			<td>E</td>
+			<td>{{e}}</td>
+			<td rowspan="1">{{unit_e_input}}</td>	
+
+		</tr>		  
+		<tr>
+			<td>Total length of the beam</td>
+			<td>L</td>
+			<td>{{l}}</td>
+			<td rowspan="1">{{unit_l_input}}</td>	
+
+		</tr>		  
+		<tr>
+			<td>Force distance from end B</td>
+			<td>b</td>
+			<td>{{b}}</td>
+			<td rowspan="1">{{unit_b_input}}</td>	
+
+		</tr>	
+		
+	</table>
+
+<hr style="background-color:black">
+
+
+
+
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px">Structural steel calculator</h1>
+
+
+<table id="customers">
+
+  <tr>
+    <th colspan=4 ><img src="{% static 'image/structural_steel.jpg' %}" width="100%" height="100" /></th>
+  </tr>
+  
+  <tr>
+    <th>Parameter</th>
+    <th>Symbol</th>
+    <th>Value</th>
+	<th>Unit</th>
+  </tr>
+  
+  <form action="{% url 'calculator2' %}" method="post">
+  {% csrf_token %}
+  
+  
+		<tr>
+			<td>Force</td>
+			<td>F</td>
+			<td><input type="text" name="f_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_f_input"  >
+					  <option value="kN">kN</option>
+					  <option value="N">N</option>
+					  <option value="MN">MN</option>
+					  <option value="lbf">lbf</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		  
+		  
+		<tr>
+			<td>Force distance from A end</td>
+			<td>x</td>
+			<td><input type="text" name="x_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_x_input"  >
+						<option value="m">m</option>
+						<option value="mm">mm</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+						<option value="ft">ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		  
+		<tr>
+			<td>Force distance from end A</td>
+			<td>a</td>
+			<td><input type="text" name="a_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_a_input"  >
+						<option value="m">m</option>
+						<option value="mm">mm</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+						<option value="ft">ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>		
+  
+ 		<tr>
+			<td>Moment of inertia</td>
+			<td>I</td>
+			<td><input type="text" name="i_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_i_input" >
+						<option value="mm">mm&#8308;</option>
+						<option value="cm">cm&#8308;</option>
+						<option value="m">m&#8308;</option>
+						<option value="in">in&#8308;</option>
+						<option value="ft">ft&#8308;</option>
+					</select>
+				
+			</td>	
+
+		</tr>	 
+
+		 <tr>
+			<td>Elastic modulus</td>
+			<td>E</td>
+			<td><input type="text" name="e_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_e_input" >
+					
+						<option value="MPa">MPa</option>
+						<option value="Pa">Pa</option>
+						<option value="GPa">GPa</option>
+						<option value="N/mm_2">N/mm&sup2;</option>
+						
+					</select>
+				
+			</td>	
+
+		</tr>
+
+
+		<tr>
+			<td>Total length of the beam</td>
+			<td>L</td>
+			<td><input type="text" name="l_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_l_input"  >
+						<option value="m">m</option>
+						<option value="mm">mm</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+						<option value="ft">ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>	
+		
+		<tr>
+			<td>Force distance from end B</td>
+			<td>b</td>
+			<td><input type="text" name="b_input" value="" required></td>
+			<td rowspan="1">
+				
+					<select name="unit_b_input"  >
+						<option value="m">m</option>
+					</select>
+				
+			</td>	
+
+		</tr>		
+		
+	</table>
+	
+
+  
+	
+
+</center>
+
+
+
+<center style="margin-top:5%">
+
+<h1 style="margin-bottom:20px"> Choose your output units.</h1>
+
+<table id="customers">
+
+	  <tr>
+		<th>Parameter</th>
+		<th>Symbol</th>
+		<th>Equation</th>
+		<th>Unit</th>
+	  </tr>
+  
+  
+		<tr>
+			<td>Reaction force on A end</td>
+			<td>A</td>
+			<td>$$ A = {F &middot; b \over L} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_a_output"  >
+						<option value="kN">kN </option>
+						<option value="N">N</option>
+						<option value="MN">MN</option>
+						<option value="lbf">lbf</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td>Reaction force on B end</td>
+			<td>B</td>
+			<td>$$ B = {F &middot; a \over L} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_b_output"  >
+						<option value="kN">kN </option>
+						<option value="N">N</option>
+						<option value="MN">MN</option>
+						<option value="lbf">lbf</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="1">Bending moment at distance x</td>
+			<td rowspan="1">M(x)</td>
+			<td rowspan="1">
+			\[
+				M(x)= 
+			\begin{cases}
+				{F &middot; b &middot; {x\over L} },& \text{if } a\geq b\\
+				{F &middot; a &middot; {(1-{x\over L})}} ,              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>
+
+			<td rowspan="1">
+				
+					<select name="unit_m_x_output"  >
+						<option value="kN.m">kN.m</option>
+						<option value="N.m">N.m</option>
+						<option value="N.mm">N.mm</option>
+						<option value="lbf.ft">lbf.ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Maximum bending moment</td>
+			<td rowspan="1">M<sub>max</sub></td>
+			<td rowspan="1">
+			$$ M(x) = {F &middot;  {a &middot; b \over L}} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_m_max_output"  >
+						<option value="kN.m">kN.m</option>
+						<option value="N.m">N.m</option>
+						<option value="N.mm">N.mm</option>
+						<option value="lbf.ft">lbf.ft</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Deflection at the position of force</td>
+			<td rowspan="1">f</sub></td>
+			<td rowspan="1">
+			$$ f:= {f &middot; a^2 &middot; b^2 \over {3&middot;E&middot; I &middot; L}} $$</td>
+			<td rowspan="1">
+				
+					<select name="unit_f_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Deflection at distance x</td>
+			<td rowspan="1">v(x)</td>
+			<td rowspan="1">
+			\[
+				v(x)= 
+			\begin{cases}
+				{{F &middot; a &middot; b^2\over 
+			{6 &middot; E &middot; I}}  &middot; \left[{(1+{ L\over b }) &middot; {x \over L}}  - {x^3 \over {a &middot; b &middot; L }}\right]},& \text{if } a\geq b\\
+			
+				{{F &middot; a^2 &middot; b^2\over 
+			{6 &middot; E &middot; I}}  &middot; \left[{(1+{ L\over a }) &middot; {L-x \over L}}  - {(L-x)^3 \over {a &middot; b &middot; L }}\right]},              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>			
+			<td rowspan="1">
+				
+					<select name="unit_v_x_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Distance of maximum deflection</td>
+			<td rowspan="1">x<sub>m</sub></td>
+			<td rowspan="1">
+			\[
+				x_m= 
+			\begin{cases}
+				{\sqrt{(L^2 - b^2) \over 3}},& \text{if } a\geq b\\
+				{L - \sqrt{(L^2 - b^2) \over 3}},              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_x_m_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		<tr>
+			<td rowspan="1">Maxmum deflection at distance x<sub>m</sub></td>
+			<td rowspan="1">f<sub>m</sub></td>
+			<td rowspan="1">
+			\[
+				f_m= 
+			\begin{cases}
+				{F &middot; b &middot;\sqrt{(L^2 - b^2)^3 \over {9 &middot; \sqrt{3} &middot;E &middot; I &middot; L}}},& \text{if } a\geq b\\
+				
+				{F &middot; a &middot;\sqrt{(L^2 - b^2)^3 \over {9 &middot; \sqrt{3} &middot;E &middot; I &middot; L}}},              & \text{if } a\lt b\\
+			\end{cases}
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_f_m_output"  >
+						<option value="mm">mm</option>
+						<option value="m">m</option>
+						<option value="ft">ft</option>
+						<option value="cm">cm</option>
+						<option value="in">in</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+
+		<tr>
+			<td rowspan="1">Rotation angle at end A</td>
+			<td rowspan="1">&alpha;<sub>A</sub></td>
+			<td rowspan="1">
+			\[
+				\alpha_A= {F &middot; a &middot; b &middot; (L+b)\over{6&middot;E&middot;I&middot;L}}
+
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_alpha_a_output"  >
+						<option value="rad">rad</option>
+						<option value="deg">deg</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		
+		<tr>
+			<td rowspan="1">Rotation angle at end A</td>
+			<td rowspan="1">&alpha;<sub>B</sub></td>
+			<td rowspan="1">
+			\[
+				\alpha_B= {F &middot; a &middot; b &middot; (L+a)\over{6&middot;E&middot;I&middot;L}}
+
+			\]
+			</td>
+			<td rowspan="1">
+				
+					<select name="unit_alpha_b_output"  >
+						<option value="rad">rad</option>
+						<option value="deg">deg</option>
+					</select>
+				
+			</td>	
+
+		</tr>
+		
+		</table>
+	<input type="submit" value="Submit" style="margin-left:-46%; margin-top:5px;font-size:20px">	
+	</form>
+</center>
+
+
+	
+</center>
+
+{% endif %}
+
+									{% block JS %}
+									
+	<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>								
+									
+									{% endblock %}
+
+
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
